@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app/models/db_connect.dart';
 import 'package:quiz_app/models/question_model.dart';  //question model
 import 'package:quiz_app/widgets/next_button.dart';
 import 'package:quiz_app/widgets/option_card.dart';
@@ -17,17 +18,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Question>_questions = [
-    Question(
-      id: '10',
-      title: 'What is 2 +2 ?', 
-      options: {'5':false,'30':false,'4':true,'10':false},
-    ),
-    Question(id: '11',
-      title: 'What is 10 + 20 ?',
-      options: {'40':false,'30':true,'20':false,'60':false},
-    ),
-  ];
+  //create an object for db connection
+  var db = DBconnect();
+
+  late Future _questions;
+  Future<List<Question>> getData() async{
+    return db.fetchQuestions();
+  }
+
+  // List<Question>_questions = [
+  //   Question(
+  //     id: '10',
+  //     title: 'What is 2 +2 ?',
+  //     options: {'5':false,'30':false,'4':true,'10':false},
+  //   ),
+  //   Question(id: '11',
+  //     title: 'What is 10 + 20 ?',
+  //     options: {'40':false,'30':true,'20':false,'60':false},
+  //   ),
+  // ];
 
   //create an index to loop trough question
   int index = 0;
@@ -47,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (ctx) => ResultBox(
             result: score, //total points user get
             questionLength: _questions.length,  //out of how many questions
+            onPressed: startOver,
       ));
     }else{
       if(isPressed) {
@@ -74,22 +84,23 @@ class _HomeScreenState extends State<HomeScreen> {
     }else{
       if (value == true) {
         score ++;
-        setState(() {
-          isPressed = true;
-          isAlreadySelected = true;
-        });
       }
+      setState(() {
+        isPressed = true;
+        isAlreadySelected = true;
+      });
     }
 
   }
+  //function to start over
   void startOver(){
     setState(() {
       index = 0;
       score =0;
       isPressed =false;
       isAlreadySelected = false;
-
     });
+    Navigator.pop(context);
   }
   @override
   Widget build(BuildContext context) {
