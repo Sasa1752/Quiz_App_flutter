@@ -5,6 +5,8 @@ import 'dart:convert';
 class DBconnect{
   //firebase address and table name add to the end as json
   final url = Uri.parse('https://simplequizapp-2ec12-default-rtdb.firebaseio.com/questions.json');
+
+  //this part is optional for add questions for app
   Future<void> addQuestion(Question question) async{
     http.post(url,body:json.encode({
       'title' : question.title,
